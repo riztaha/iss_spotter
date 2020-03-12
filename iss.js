@@ -7,12 +7,13 @@
  *   - The IP address as a string (null if error). Example: "162.245.144.188"
  */
 
-const url = "https://api.ipify.org?format=json";
+const urlIP = "https://api.ipify.org?format=json";
 const request = require("request");
+const urlLoc = `https://ipvigilante.com/`;
 
+// Function to get users IP address.
 const fetchMyIP = function(callback) {
-  // use request to fetch IP address from JSON API
-  request(url, (error, response, body) => {
+  request(urlIP, (error, response, body) => {
     if (error) {
       callback(error, null);
       return;
@@ -28,23 +29,23 @@ const fetchMyIP = function(callback) {
   });
 };
 
-// const fetchCoordsByIP = function(_ip, _callback) {
-//     request(url, (error, response, body) =>{
-//         if (error) {
-//             console.log(error//,null);
-//             return
-//         }
-//         if (response.statusCode !== 200) {
-//             const msg = `Status Code ${response.statusCode} when fetching GEOLOCATION. Response: ${body}`;
-//         }
-//         else {
-//             const data = JSON.parse(body)
-//             console.log(data.)
-//         }
-//     })
-
-// }
-
-// fetchMyIP();
+//Function to get users coordinates.
+const fetchCoordsByIP = function(ip, callback) {
+  request(urlLoc + ip, (error, response, body) => {
+    if (error) {
+      callback(error);
+    }
+    if (response.statusCode !== 200) {
+      const msg = `Status Code ${response.statusCode} when fetching GEOLOCATION. Response: ${body}`;
+    } else {
+      const data = JSON.parse(body);
+      let lat = data.data.latitude;
+      let long = data.data.longitude;
+      let loc = { latitude: lat, longitude: long };
+      callback(null, loc);
+      // callback(data)
+    }
+  });
+};
 
 module.exports = { fetchMyIP, fetchCoordsByIP };
